@@ -69,27 +69,17 @@ fn fermat_prime(n: u64) -> bool {
 // Return b^k ... but can't handle overflow
 fn exp(b: u64, k: u64, m: u64) -> u64 {
 
-
     let mut total = 1u64;
     let mut pow = b;
     let mut mask = 1u64;
+    let mut k = k;
 
-    for i in 1..64 {
-
-        if pow == 0 {
-            continue;
-        }
-
-        if std::u64::MAX / pow < pow {
-            break;
-        }
-
-        if mask & k != 0 {
+    while k > 0 {
+        if k & 1 == 1 {
             total = (total*pow) % m;
         }
-
         pow = (pow * pow) % m;
-        mask *= 2;
+        k /= 2;
     }
 
     total
@@ -98,16 +88,18 @@ fn exp(b: u64, k: u64, m: u64) -> u64 {
 
 
 fn main() {
-    // println!("{}", gcd(15, 5));
-    // println!("{}", gcd(12, 8));
-    // println!("{}", gcd(2*27, 3*27));
+    for i in 95..100 {
+        println!("{} => {}", i, exp(5, i, 14))
+    }
 
 
+        /*
     for i in 15..100000 {
          if is_prime(i) != fermat_prime(i) {
              println!("i={} => {} != {}", i, "-", fermat_prime(i));
          }
     }
+        */
 
 
     /*
