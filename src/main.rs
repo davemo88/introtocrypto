@@ -9,9 +9,7 @@ fn gcd(a: u64, b: u64) -> u64 {
         let old_a = a;
         a = b;
         b = old_a % b;
-    }
-    a
-}
+    } a }
 
 /// Return whether a number is prime. This is O(2^n).
 fn is_prime(n: u64) -> bool {
@@ -86,20 +84,43 @@ fn exp(b: u64, k: u64, m: u64) -> u64 {
 }
 
 
+fn sqrt(p: u64, m: u64) -> u64 {
+    for root in 2..m {
+        if root*root % m == p {
+            return 2
+        }
+    }
+    0
+}
+
 
 fn main() {
-    for i in 95..100 {
-        println!("{} => {}", i, exp(5, i, 14))
+
+    println!("{}", sqrt(2, 7));
+    println!("{}", sqrt(29, 35));
+
+    for p in 3..200 {
+        if !is_prime(p) {
+            continue
+        }
+
+        println!(
+            "{} => 2^(p-1)/2 (mod p) = 2^{} => {} ..... {}",
+            p,
+            (p-1)/2,
+            exp(2, (p-1)/2, p),
+            sqrt((p-1)/2, p),
+        )
     }
 
 
-        /*
+    /*
     for i in 15..100000 {
          if is_prime(i) != fermat_prime(i) {
              println!("i={} => {} != {}", i, "-", fermat_prime(i));
          }
     }
-        */
+    */
 
 
     /*
