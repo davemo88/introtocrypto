@@ -132,12 +132,23 @@ fn sqrt(p: u64, m: u64) -> u64 {
     0
 }
 
-fn inverse(a: i64, p: i64) -> i64 {
+fn inverse(a: i64, p: i64) -> Result<i64, ()> {
+    if a == 1 {
+        return Ok(1)
+    }
+
     let (_d, _x, y) = gcd_extended(p, a);
-    if y < 0 {
+
+    let res = if y < 0 {
         p+y
     } else {
         y
+    };
+
+    if res == 1 {
+        Err(())
+    } else {
+        Ok(res)
     }
 }
 
@@ -225,16 +236,28 @@ mod tests {
 
 
     #[test]
-    fn test_inverse() {
-
-        fn assert_has_inverse(n: i64, p: i64) {
-            assert_eq!(slow_inverse(n, p), inverse(n, p));
+    fn test_inverse() -> Result<(), ()> {
+        fn assert_has_inverse(n: i64, p: i64) -> Result<(), ()> {
+            let g = slow_inverse(n, p);
+            let h = inverse(n, p)?;
+            assert_eq!(g, h);
+            Ok(())
         }
-        assert_eq!(inverse(15, 26), 7);
-        assert_eq!(inverse(4, 7), 2);
-        assert_eq!(inverse(3, 7), 5);
-        assert_has_inverse(3, 7);
-        assert_has_inverse(3, 13);
+        assert_has_inverse(15, 26)?;
+        assert_has_inverse(4, 7)?;
+        assert_has_inverse(3, 7)?;
+        assert_has_inverse(3, 13)?;
+
+
+        if let Ok(res) = inverse(3, 6) {
+            println!("res => {}", res);
+            assert!(false);
+        } else {
+            println!("No inverse!")
+        }
+
+        // assert_has_inverse(2, 6);
+        Ok(())
     }
 
     #[test]
