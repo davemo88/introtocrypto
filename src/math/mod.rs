@@ -226,10 +226,15 @@ mod tests {
 
     #[test]
     fn test_inverse() {
+
+        fn assert_has_inverse(n: i64, p: i64) {
+            assert_eq!(slow_inverse(n, p), inverse(n, p));
+        }
         assert_eq!(inverse(15, 26), 7);
         assert_eq!(inverse(4, 7), 2);
         assert_eq!(inverse(3, 7), 5);
-        assert_eq!(slow_inverse(3, 13), inverse(3, 13));
+        assert_has_inverse(3, 7);
+        assert_has_inverse(3, 13);
     }
 
     #[test]
