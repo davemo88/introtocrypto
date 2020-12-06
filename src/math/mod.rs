@@ -19,17 +19,17 @@ fn gcd(a: u64, b: u64) -> u64 {
 /// A more detail statemetn
 ///
 ///  ```rust
-/// let (d, x, r) = gcd_extended(26, 15, 1, 0);
+/// let (d, x, r) = gcd_extended(26, 15);
 /// println!("inverse = {}", x);
 /// assert_eq!(3*r % 7, 1);
 /// assert!(false);
 ///  ```
-fn gcd_extended(a: i64, b: i64, x: i64, y: i64) -> (i64, i64, i64) {
+fn gcd_extended(a: i64, b: i64) -> (i64, i64, i64) {
     if b == 0 {
         return (a, 1, 0);
     }
 
-    let (d, x, y) = gcd_extended(b, a % b, x, y);
+    let (d, x, y) = gcd_extended(b, a % b);
 
     return (
         d,
@@ -133,7 +133,7 @@ fn sqrt(p: u64, m: u64) -> u64 {
 }
 
 fn inverse(a: i64, p: i64) -> i64 {
-    let (_d, _x, y) = gcd_extended(p, a, 1, 0);
+    let (_d, _x, y) = gcd_extended(p, a);
     if y < 0 {
         p+y
     } else {
@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     fn test_gcd() {
-        let (_d, _x, r) = gcd_extended(26, 15, 1, 0);
+        let (_d, _x, r) = gcd_extended(26, 15);
         assert_eq!((15 * r) % 26, 1);
     }
     
