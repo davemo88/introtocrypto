@@ -28,6 +28,12 @@ impl Keys {
     fn decode_message(&self, _message: Message) -> Message {
         Message{a: 0, p: 0}
     }
+
+    fn assert(&self) {
+        for _i in 1..10 {
+
+        }
+    }
 }
 
 fn generate_keys() -> Keys {
@@ -52,6 +58,8 @@ mod tests {
 
     #[test]
     fn test_what() {
+        let keys = generate_keys();
+        keys.assert();
     }
 
     #[test]

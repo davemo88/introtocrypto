@@ -9,7 +9,35 @@ fn gcd(a: u64, b: u64) -> u64 {
         let old_a = a;
         a = b;
         b = old_a % b;
-    } a }
+    }
+    a
+}
+
+
+/// Return the results of gcd-extebnded
+///
+/// A more detail statemetn
+///
+///  ```rust
+/// let (d, x, r) = gcd_extended(26, 15, 1, 0);
+/// println!("inverse = {}", x);
+/// assert_eq!(3*r % 7, 1);
+/// assert!(false);
+///  ```
+fn gcd_extended(a: i64, b: i64, x: i64, y: i64) -> (i64, i64, i64) {
+    if b == 0 {
+        return (a, 1, 0);
+    }
+
+    let (d, x, y) = gcd_extended(b, a % b, x, y);
+
+    return (
+        d,
+        y,
+        x-y*(a/b),
+    );
+
+}
 
 /// Return whether a number is prime. This is O(2^n).
 fn is_prime(n: u64) -> bool {
@@ -83,6 +111,17 @@ fn exp(b: u64, k: u64, m: u64) -> u64 {
     total
 }
 
+// Return the order of a number n % p
+fn order(n: u64, p: u64) -> u64 {
+    let mut v = n;
+    let mut order = 1;
+    while v != 1 {
+        v = (v * n) % p;
+        order += 1;
+    }
+    order
+}
+
 
 fn sqrt(p: u64, m: u64) -> u64 {
     for root in 2..m {
@@ -93,6 +132,25 @@ fn sqrt(p: u64, m: u64) -> u64 {
     0
 }
 
+fn inverse(a: i64, p: i64) -> i64 {
+    let (_d, _x, y) = gcd_extended(p, a, 1, 0);
+    if y < 0 {
+        p+y
+    } else {
+        y
+    }
+}
+
+fn slow_inverse(a: i64, p: i64) -> i64 {
+    for h in 2..p {
+        let e = a*h % p;
+        if e == 1 {
+            return h;
+        }
+    }
+    -1
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -101,13 +159,15 @@ mod tests {
 
     #[test]
     fn test_gcd() {
-        println!("{}", sqrt(5, 7));
+        let (_d, _x, r) = gcd_extended(26, 15, 1, 0);
+        assert_eq!((15 * r) % 26, 1);
     }
     
     #[test]
     fn can_decompose_composite() {
         let factors = factor(3*5*7);
         let factors = factors.0;
+
         assert_eq!(factors.len(), 3);
         assert!(factors.contains_key(&3));
         assert!(factors.contains_key(&5));
@@ -161,5 +221,22 @@ mod tests {
         // println!("{}", factor(3*5*29*30));
         assert!(!is_prime(27));
         assert!(gcd(15, 5) == 5);
+    }
+
+
+    #[test]
+    fn test_inverse() {
+        assert_eq!(inverse(15, 26), 7);
+        assert_eq!(inverse(4, 7), 2);
+        assert_eq!(inverse(3, 7), 5);
+        assert_eq!(slow_inverse(3, 13), inverse(3, 13));
+    }
+
+    #[test]
+    fn test_el_gamal() {
+        let p = 467;
+        let g = 2;
+        println!("order({}, {}) = {}", g, p, order(g, p));
+        // assert!(false);
     }
 }
