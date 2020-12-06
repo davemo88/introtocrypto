@@ -237,17 +237,18 @@ mod tests {
 
     #[test]
     fn test_inverse() -> Result<(), ()> {
+
         fn assert_has_inverse(n: i64, p: i64) -> Result<(), ()> {
             let g = slow_inverse(n, p);
             let h = inverse(n, p)?;
             assert_eq!(g, h);
             Ok(())
         }
+
         assert_has_inverse(15, 26)?;
         assert_has_inverse(4, 7)?;
         assert_has_inverse(3, 7)?;
         assert_has_inverse(3, 13)?;
-
 
         if let Ok(res) = inverse(3, 6) {
             println!("res => {}", res);
@@ -256,7 +257,6 @@ mod tests {
             println!("No inverse!")
         }
 
-        // assert_has_inverse(2, 6);
         Ok(())
     }
 
