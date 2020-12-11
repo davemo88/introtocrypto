@@ -123,13 +123,13 @@ fn order(n: u64, p: u64) -> u64 {
 }
 
 
-fn sqrt(p: u64, m: u64) -> u64 {
+fn sqrt(p: u64, m: u64) -> Result<u64, ()> {
     for root in 2..m {
         if root*root % m == p {
-            return 2
+            return Ok(root)
         }
     }
-    0
+    Err(())
 }
 
 fn inverse(a: i64, p: i64) -> Result<i64, ()> {
@@ -172,6 +172,7 @@ mod tests {
     fn test_gcd() {
         let (_d, _x, r) = gcd_extended(26, 15);
         assert_eq!((15 * r) % 26, 1);
+        assert!(gcd(15, 5) == 5);
     }
     
     #[test]
@@ -186,52 +187,69 @@ mod tests {
     }
 
     #[test]
-    fn test_fermate_prime() {
-        assert_eq!(fermat_prime(7), true);
+    fn test_is_prime() -> Result<(), ()> {
+        assert!(!is_prime(27));
+        for i in 15..1000 {
+             if is_prime(i) != fermat_prime(i) {
+                 println!("i={} => {} != {}", i, "-", fermat_prime(i));
+             }
+        }
+        Ok(())
     }
     
     #[test]
-    fn test_fermat_prime() {
+    fn test_sqrt() -> Result<(), ()> {
+        println!("{}", sqrt(2, 7)?);
+        println!("{}", sqrt(29, 35)?);
+        Ok(())
+    }
 
-        println!("{}", sqrt(2, 7));
-        println!("{}", sqrt(29, 35));
+    #[test]
+    fn test_fermat_prime() -> Result<(), ()> {
+
+        assert_eq!(fermat_prime(7), true);
+
 
         for p in 3..200 {
             if !is_prime(p) {
                 continue
             }
 
+            let root = if let Ok(root) = sqrt((p-1)/2, p) {
+                root
+            } else {
+                continue;
+            };
+
             println!(
                 "{} => 2^(p-1)/2 (mod p) = 2^{} => {} ..... {}",
                 p,
                 (p-1)/2,
                 exp(2, (p-1)/2, p),
-                sqrt((p-1)/2, p),
+                root,
             )
         }
 
+        Ok(())
 
-        /*
-        for i in 15..100000 {
-             if is_prime(i) != fermat_prime(i) {
-                 println!("i={} => {} != {}", i, "-", fermat_prime(i));
-             }
-        }
-        */
+    }
 
-
-        /*
+    #[test]
+    fn test_exp() -> Result<(), ()> {
         println!("{}", exp(3, 1, 2000));
         println!("{}", exp(3, 2, 2000));
         println!("{}", exp(5, 7, 2000));
         println!("{}", exp(9, 24, 1021921));
         println!("{}", exp(3, 5, 2000));
-        */
-        // println!("{}", exp(3, 8+4+2+1));
-        // println!("{}", factor(26));
-        // println!("{}", factor(3*5*29*30));
-        assert!(!is_prime(27));
-        assert!(gcd(15, 5) == 5);
+        println!("{}", exp(3, 8+4+2+1, 7));
+        Ok(())
+    }
+
+    #[test]
+    fn test_factor() -> Result<(), ()> {
+        println!("{}", factor(26));
+        println!("{}", factor(3*5*29*30));
+        Ok(())
     }
 
 
